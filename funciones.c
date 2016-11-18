@@ -5,7 +5,7 @@
 #define VACIO 0
 #define CARGADA 1
 
-void initialize(EMovie this[])
+void initialize(EMovie this[],EMovie aux[])
 {
     int i;
     for(i=0;i<10;i++)
@@ -13,6 +13,11 @@ void initialize(EMovie this[])
     this[i].id = VACIO;
     this[i].carga = VACIO;
     this[i].puntaje = VACIO;
+    this[i].duracion = VACIO;
+    aux[i].id = VACIO;
+    aux[i].carga = VACIO;
+    aux[i].puntaje = VACIO;
+    aux[i].duracion = VACIO;
     }
 }
 
@@ -107,7 +112,7 @@ int get_movie(EMovie this[])
                                 }
                                 else
                                 {
-                                    this[i].id++;
+                                    this[i].id = this[i-1].id + 1;
                                     printf("El ID de pelicula es: %d, recuerdelo por favor.\n",this[i].id);
                                     this[i].carga = CARGADA;
                                     retorno = 0;
@@ -396,7 +401,7 @@ int delete_movie(EMovie this[])
     return retorno;
 }
 
-int modify_movie(EMovie this[])
+int modify_movie(EMovie this[],EMovie aux[])
 {
     int i;
     int aux_id = 0;
@@ -405,97 +410,107 @@ int modify_movie(EMovie this[])
     char texto[200];
     int opcion = 0;
     int error = -1;
+    int error_id = -1;
 
     printf("Ingrese el ID de la pelicula a modificar\n");
     scanf("%d",&aux_id);
-    //validar numero
-
-    for(i=0;i<10;i++)
+    if((error_id = validateNumber(aux_id,1,10)) == 1)
     {
-        if(this[i].carga == CARGADA && aux_id == this[i].id)
+        for(i=0;i<10;i++)
         {
-            printf("La pelicula que desea modificar se llama: %s, Desea cambiarla? S/N\n",this[i].titulo);
-            fflush(stdin);
-            scanf("%c",&rta);
-            //Validar rta
-            if(rta == 'S')
+            if(this[i].carga == CARGADA && aux_id == this[i].id)
             {
-                do//fijarse si puede hacerse funcion
+                printf("La pelicula que desea modificar se llama: %s, Desea cambiarla? S/N\n",this[i].titulo);
+                fflush(stdin);
+                scanf("%c",&rta);
+                rta = upperCase(rta);
+                generateHTML(this,aux);
+                if(rta == 'S')
                 {
-                    printf("Que desea cambiar?\n");
-                    printf("1- El Titulo\n");
-                    printf("2- El Genero\n");
-                    printf("3- La Descripcion\n");
-                    printf("4- La Duracion\n");
-                    printf("5- El Puntaje\n");
-                    printf("6- El Link de la imagen\n");
-                    printf("7- Nada, volver al menu principal\n");
-                    scanf("%d",&opcion);
-                    //validar opcion
-                    switch(opcion)
+                    do
                     {
-                    case 1:
-                        strcpy(texto,"Ingrese el nuevo titulo de la pelicula:\n");
-                        error = get_title(texto,this,i);
-                        //validacion para todas de numero
-                        break;
+                        printf("Que desea cambiar?\n");
+                        printf("1- El Titulo\n");
+                        printf("2- El Genero\n");
+                        printf("3- La Descripcion\n");
+                        printf("4- La Duracion\n");
+                        printf("5- El Puntaje\n");
+                        printf("6- El Link de la imagen\n");
+                        printf("7- Nada, volver al menu principal\n");
+                        scanf("%d",&opcion);
+                        //validar opcion
+                        switch(opcion)
+                        {
+                        case 1:
+                            strcpy(texto,"Ingrese el nuevo titulo de la pelicula:\n");
+                            error = get_title(texto,this,i);
+                            //validacion para todas de numero
+                            break;
 
-                    case 2:
-                        strcpy(texto,"Ingrese el nuevo genero para la pelicula:\n");
-                        error = get_type(texto,this,i);
-                        break;
+                        case 2:
+                            strcpy(texto,"Ingrese el nuevo genero para la pelicula:\n");
+                            error = get_type(texto,this,i);
+                            break;
 
-                    case 3:
-                        strcpy(texto,"Ingrese una nueva descripcion para la pelicula:\n");
-                        error = get_description(texto,this,i);
-                        break;
+                        case 3:
+                            strcpy(texto,"Ingrese una nueva descripcion para la pelicula:\n");
+                            error = get_description(texto,this,i);
+                            break;
 
-                    case 4:
-                        strcpy(texto,"Ingrese la nueva duracion de la pelicula en minutos\n");
-                        error = get_duration(texto,this,i);
-                        break;
+                        case 4:
+                            strcpy(texto,"Ingrese la nueva duracion de la pelicula en minutos\n");
+                            error = get_duration(texto,this,i);
+                            break;
 
-                    case 5:
-                        strcpy(texto,"Ingrese el puntaje de la pelicula del 1 al 10\n");
-                        error = get_score(texto,this,i);
-                        break;
+                        case 5:
+                            strcpy(texto,"Ingrese el puntaje de la pelicula del 1 al 10\n");
+                            error = get_score(texto,this,i);
+                            break;
 
-                    case 6:
-                        strcpy(texto,"Ingrese el link de la imagen de la pelicula\n");
-                        error = get_link(texto,this,i);
-                        break;
+                        case 6:
+                            strcpy(texto,"Ingrese el link de la imagen de la pelicula\n");
+                            error = get_link(texto,this,i);
+                            break;
 
-                    case 7:
-                        opcion = 7;
-                        break;
+                        case 7:
+                            opcion = 7;
+                            break;
 
-                    default:
-                        printf("No es una opcion correcta\n");
-                        break;
-                    }
-                }while(opcion != 7);
+                        default:
+                            printf("No es una opcion correcta\n");
+                            break;
+                        }
+                    }while(opcion != 7);
+                    retorno = 1;
+                }
+                else if(rta == 'N')
+                {
+                    retorno = -1;
+                    break;
+                }
             }
-            else if(rta == 'N')
+            else
             {
-                printf("No se modificara la pelicula\n");
-                break;
+            continue;
             }
-        }
-        else
-        {
-        continue;
         }
     }
+    else
+    {
+        retorno = -1;
+    }
+
+    createFile(this);
     return retorno;
 }
 
 // devuelve -1 si hay error, 0 si todo salio bien
-int createFile(EMovie this[],EMovie aux[])
+int createFile(EMovie this[])
 {
     int cant=0,i=0,length;
-    FILE *p,*t;
+    FILE *p;
 
-    p = fopen("registro.txt","w+");
+    p = fopen("registro.dat","wb+");
     fseek(p,0L,SEEK_SET);
 
     for(i=0;i<10;i++)
@@ -506,33 +521,54 @@ int createFile(EMovie this[],EMovie aux[])
         }
     }
 
-    printf("asda,pete");
-    fseek(p,0L,SEEK_SET);
-    printf("asdaaa\n");
-    while(!feof(p))
-    {
-        fscanf(p,"%[^,]%[^,]%[^,]%[^,]%[^,]%[^,]%[^\n]\n",aux[i].titulo,aux[i].genero,&aux[i].duracion,aux[i].descripcion,&aux[i].puntaje,aux[i].linkImagen,&aux[i].id);
-        i++;
-        if(i > 10)
-            break;
-    }
-    printf("Cargado\n");
+    fseek(p,0L,SEEK_END);
 
     fclose(p);
 
     return cant;
 }
 
-/*void generateHTML(EMovie this[],EMovie array[])
+int readFile(EMovie aux[])
 {
+    int retorno;
+    int i=0;
     FILE *p;
 
-    p = fopen()
+    p = fopen("registro.dat","r");
+    fseek(p,0L,SEEK_SET);
 
+    while(!feof(p))
+    {
+        fscanf(p,"%[^,],%[^,],%d,%[^,],%d,%[^,],%d\n",aux[i].titulo,aux[i].genero,&aux[i].duracion,aux[i].descripcion,&aux[i].puntaje,aux[i].linkImagen,&aux[i].id);
+        i++;
+    }
+
+    fclose(p);
+
+    return retorno;
 }
-*/
 
-
+void generateHTML(EMovie this[],EMovie aux[])
+{
+    FILE* file;
+    int i;
+        file=fopen("./webpage.html","wb");
+        fprintf(file,"<article class='col-md-4 article-intro'><a href='#'><img class='img-responsive img-rounded' src='http://ia.mediaimdb.com/images/M/MV5BMjA5NTYzMDMyM15BMl5BanBnXkFtZTgwNjU3NDU2MTE@._V1_UX182_CR0,0,182,268_AL_.jpg'alt=''></a><h3>");
+        for(i=0;i<10;i++)
+        {
+            if(this[i].carga == CARGADA)
+            {
+            fprintf(file,"<a href='#'><h3>%s</h3></a>",aux[i].titulo);
+            //fprintf(file," <img class='img-responsive img-rounded' src=' %s 'alt=''>",aux[i].linkImagen);
+            fprintf(file,"<ul><li>Genero:%s</li>",aux[i].genero);
+            fprintf(file,"<li>Puntaje:%d</li>",aux[i].puntaje);
+            fprintf(file,"<li>Duracion:%d minutos</li></ul>",aux[i].duracion);
+            fprintf(file,"<p>%s</p>",aux[i].descripcion);
+            }
+        }
+        fprintf(file,"</article></body></html>");
+        fclose(file);
+}
 
 
 

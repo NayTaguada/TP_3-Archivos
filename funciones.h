@@ -34,9 +34,9 @@ int delete_movie(EMovie this[]);
  */
 void create_html(EMovie lista[], char nombre[]);
 
-int modify_movie(EMovie this[]);
+int modify_movie(EMovie this[],EMovie aux[]);
 
-void initialize(EMovie this[]);
+void initialize(EMovie this[],EMovie aux[]);
 int get_info(char texto[200],EMovie this[],int numero);
 int get_title(char texto[200],EMovie this[],int i);
 int get_type(char texto[200],EMovie this[],int i);
@@ -46,6 +46,9 @@ int get_duration(char texto[200],EMovie this[],int i);
 int get_duration(char texto[200],EMovie this[],int i);
 int lenghtString(char texto[200],int i);
 char upperCase(char letra);
-int createFile(EMovie this[],EMovie aux[]);
+int createFile(EMovie this[]);
+int readFile(EMovie aux[]);
+void generateHTML(EMovie this[],EMovie aux[]);
+int validateNumber(int num,int nInferior,int nSuperior);
 
 #endif // FUNCIONES_H_INCLUDED

@@ -11,7 +11,7 @@ int main()
 
     EMovie aux[10];
     EMovie movieArray[10];
-    initialize(movieArray);
+    initialize(movieArray,aux);
 
     while(seguir=='s')
     {
@@ -35,11 +35,9 @@ int main()
                 {
                     printf("La pelicula se cargo con exito\n");
                 }
-                error = createFile(movieArray,aux);
-                    for(i=0;i<10;i++)
-                    {
-                        printf("%s,%s,%s,%s,%s,%s,%s\n",aux[i].titulo,aux[i].genero,aux[i].duracion,aux[i].descripcion,aux[i].puntaje,aux[i].linkImagen,aux[i].id);
-                    }
+                error = createFile(movieArray);
+                printf("Archivo creado?\n");
+                error = readFile(aux);
                 break;
 
             case 2:
@@ -47,7 +45,7 @@ int main()
                 break;
 
             case 3:
-                modify_movie(movieArray);
+                modify_movie(movieArray,aux);
                 break;
 
             case 4:
